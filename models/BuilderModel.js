@@ -5,7 +5,7 @@ const builderSchema = new mongoose.Schema(
     groupName: {
       type: String,
       required: true,
-      unique: true, // Ensuring each builder group has a unique name
+      unique: true, // Ensures each builder group has a unique name
     },
     logoImage: {
       type: String, // URL or path to the builder's logo image
@@ -14,12 +14,13 @@ const builderSchema = new mongoose.Schema(
     associatedProperties: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Property', // References to the Property model
+        ref: 'Property', // References the Property model
       },
     ],
     cities: [
       {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'City', // References the City model
         required: true,
       },
     ], // Array of cities where the builder has properties

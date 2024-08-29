@@ -3,10 +3,10 @@ const connectDB = require('./config'); // Import the database connection functio
 
 const PORT = process.env.PORT || 3000;
 
-// Connect to MongoDB
+// Connect to Datbase
 connectDB();
 
-// Start the server
+// Start Server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

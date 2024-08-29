@@ -3,14 +3,16 @@ const mongoose = require('mongoose');
 const propertySchema = new mongoose.Schema(
   {
     city: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'City',
       required: true,
     },
     location: {
       type: String,
     },
     builder: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Builder',
     },
     project: {
       type: String,

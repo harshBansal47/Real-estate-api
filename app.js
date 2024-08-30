@@ -18,6 +18,11 @@ app.use(express.urlencoded({ extended: true })); // Parse URL-encoded requests
 const router = express.Router();
 app.use(router);
 
+//Login Api Route
+const loginroutes = require('./routes/LoginRoute')
+app.use('/api/login',loginroutes)
+
+
 //Search Api Route
 const searchroutes = require('./routes/SearchRoute')
 app.use('/props/search',searchroutes);
@@ -25,8 +30,6 @@ app.use('/props/search',searchroutes);
 //Builder Api Route
 const builderroutes = require('./routes/BuilderRoute')
 app.use('/props/builder',builderroutes);
-
-
 
 // Error handling middleware
 app.use((err, req, res, next) => {

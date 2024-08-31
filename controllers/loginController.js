@@ -17,12 +17,16 @@ exports.registerUser = async (req, res) => {
             role
         });
 
-        // Save the user in the database
-        await newUser.save();
+        const savedUser = await newUser.save();
+        console.log("new user create at",savedUser.createdAt);
 
-        res.status(201).json({status:"suceess", role: user.role });
+        res.status(201).json({ status: "success", role: savedUser.role });
     } catch (error) {
-        res.status(500).send("Server error",error);
+        // Ensure to log the error for debugging
+        console.error('Error during user registration:', error);
+
+        // Properly format the error response
+        res.status(500).json({ status: "error", message: "Server error", details: error.message });
     }
 };
 
@@ -34,18 +38,19 @@ exports.loginUser = async (req, res) => {
         // Find the user by username
         const user = await User.findOne({ username });
         if (!user) {
-            return res.status(404).send("User not found");
+            return res.status(404).json({ status: "error", message: "User not found" });
         }
 
         // Check if the provided password matches the one stored in the database
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(401).send("Invalid credentials");
+            return res.status(401).json({ status: "error", message: "Invalid credentials" });
         }
 
         // Send back the user's role
-        res.status(200).json({status:"suceess", role: user.role });
+        res.status(200).json({ status: "success", role: user.role });
     } catch (error) {
-        res.status(500).send("Server error");
+        console.error('Error during user login:', error);
+        res.status(500).json({ status: "error", message: "Server error", details: error.message });
     }
 };

@@ -1,87 +1,109 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const propertySchema = new mongoose.Schema(
-  {
-    city: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'City',
-      required: true,
-    },
-    location: {
-      type: String,
-    },
-    builder: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Builder',
-    },
-    project: {
-      type: String,
+const propertySchema = new Schema({
+    name: {
+        type: String,
+        required: true,
+        trim: true,
     },
     description: {
-      type: String,
-      required: true,
-    },
-    price: {
-      type: String, // e.g., "500,000 onwards"
-      required: true,
-    },
-    mainImage: {
-      type: String, // URL to the main image of the property
-      required: true,
-    },
-    siteImages: [
-      {
-        url: { type: String, required: true },
-        caption: { type: String },
-      },
-    ], // Array of images with URLs and optional captions
-    galleryOfSitePlans: [
-      {
-        url: { type: String, required: true },
-        caption: { type: String },
-      },
-    ], // Array of site plan images with URLs and optional captions
-    locationMap: {
-      type: String, // URL to the location map image or embed link
-      required: true,
-    },
-    amenities: [
-      {
         type: String,
-        required: true,
-      },
-    ], // Array of amenities, each being a string
-    highlights: [
-      {
-        type: String,
-        required: true,
-      },
-    ], // Array of key points or highlights about the property
+        trim: true,
+    },
     propertyType: {
-      type: String, // e.g., "Apartment", "Villa", "Commercial"
-      required: true,
-    },
-    propertySize: {
-      type: Number, // e.g., Size in square feet or square meters
-      required: true,
+        type: String,
+        enum: ['Residential', 'Commercial', 'Industrial', 'Land', 'Other'],
+        required: true,
     },
     constructionStatus: {
-      type: String, // e.g., "Under Construction", "Ready to Move", "Upcoming"
-      required: true,
+        type: String,
+        enum: ['Under Construction', 'Ready to Move', 'Pre-Launch', 'Launch'],
+        required: true,
+    },
+    price: {
+        type: Number,
+        required: true,
+        min: 0,
+    },
+    propertySize: {
+        type: Number,
+        required: true,
+        min: 0,
+    },
+    locality: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+    city: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+    zip: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+    locationMap: {
+        latitude: {
+            type: Number,
+            required: true,
+        },
+        longitude: {
+            type: Number,
+            required: true,
+        }
     },
     reraNumber: {
-      type: String, // RERA registration number for compliance
-      required: true,
-      unique: true, // Ensuring each property has a unique RERA number
+        type: String,
+        trim: true,
     },
+    builder: {
+        type: String,
+        trim: true,
+    },
+    amenities: [{
+        type: String,
+        trim: true,
+    }],
+    highlights: [{
+        type: String,
+        trim: true,
+    }],
+    labelImage: {
+        type: String,
+        trim: true,
+    },
+    siteGallery: [{
+        type: String,
+        trim: true,
+    }],
     brochure: {
-      type: String, // URL or path to the PDF file for the property brochure
-      required: false, // Optional field
+        type: String,
+        trim: true,
     },
-  },
-  {
-    timestamps: true,
-  }
-);
+    sitePlans: [{
+        description: {
+            type: String,
+            trim: true,
+        },
+        size: {
+            type: Number,
+            min: 0,
+        },
+        image: {
+            type: String,
+            trim: true,
+        },
+        price: {
+            type: Number,
+            min: 0,
+        }
+    }]
+}, { timestamps: true });
 
-module.exports = mongoose.model('Property', propertySchema);
+const Property = mongoose.model('Property', propertySchema);
+
+module.exports = Property;

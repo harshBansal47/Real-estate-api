@@ -1,49 +1,87 @@
-const Property = require('../models/PropertyModel'); // Path to your Property model
+const Property = require('../models/PropertyModel');
 
-exports.addProperty = async (req, res) => {
+// Controller function to add a new property with logging and a 'success' status
+const addProperty = async (req, res) => {
+    console.log('Received request to add a new property'); // Initial log statement
+
     try {
-        const {
-            city, location, builder, project, description,
-            price, mainImage, siteImages, galleryOfSitePlans,
-            locationMap, amenities, highlights, propertyType,
-            propertySize, constructionStatus, reraNumber, brochure
-        } = req.body;
+        // Log the incoming request body to check data
+        console.log('Request Body:', req.body);
 
-        // Create a new property instance
-        const newProperty = new Property({
-            city,
-            location,
-            builder,
-            project,
+        // Destructure the request body
+        const {
+            name,
             description,
+            propertyType,
+            constructionStatus,
             price,
-            mainImage,
-            siteImages,
-            galleryOfSitePlans,
+            propertySize,
+            locality,
+            city,
+            zip,
             locationMap,
+            reraNumber,
+            builder,
             amenities,
             highlights,
+            labelImage,
+            siteGallery,
+            brochure,
+            sitePlans
+        } = req.body;
+
+        // Log individual fields if necessary
+        console.log('Property Name:', name);
+        console.log('Property Type:', propertyType);
+        console.log('Location:', city, zip);
+
+        // Create a new Property instance
+        const newProperty = new Property({
+            name,
+            description,
             propertyType,
-            propertySize,
             constructionStatus,
+            price,
+            propertySize,
+            locality,
+            city,
+            zip,
+            locationMap,
             reraNumber,
-            brochure
+            builder,
+            amenities,
+            highlights,
+            labelImage,
+            siteGallery,
+            brochure,
+            sitePlans
         });
 
-        // Save the new property to the database
+        // Log the property object before saving
+        console.log('New Property Object:', newProperty);
+
+        // Save the property to the database
         const savedProperty = await newProperty.save();
 
-        // Return the newly created property data
+        // Log successful save
+        console.log('Property saved successfully:', savedProperty);
+
+        // Return success response with status: 'success'
         res.status(201).json({
-            success: true,
-            message: "Property added successfully",
-            data: savedProperty
+            status: 'success',
+            property: savedProperty
         });
     } catch (error) {
-        console.error('Failed to add property:', error);
+        // Log the error details
+        console.error('Error adding property:', error.message);
         res.status(500).json({
-            success: false,
-            message: 'Failed to add property due to internal server error'
+            status: 'error',
+            message: 'Server error',
+            error: error.message
         });
     }
+};
+
+module.exports = {
+    addProperty,
 };

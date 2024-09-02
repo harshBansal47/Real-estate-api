@@ -1,4 +1,6 @@
-const propertySchema = new Schema({
+const mongoose = require('mongoose');
+
+const propertySchema = new mongoose.Schema({
     propertyTitle: {
         type: String,
         required: true,

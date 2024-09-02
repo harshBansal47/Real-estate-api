@@ -1,87 +1,117 @@
-const Property = require('../models/PropertyModel');
+const Property = require('../models/PropertyModel'); // Import the Property model
 
-// Controller function to add a new property with logging and a 'success' status
-const addProperty = async (req, res) => {
-    console.log('Received request to add a new property'); // Initial log statement
+// Controller function to create a new property
+exports.createProperty = async (req, res) => {
+    console.log('Received request to create property'); // Log initial request
 
     try {
-        // Log the incoming request body to check data
-        console.log('Request Body:', req.body);
-
-        // Destructure the request body
+        // Step 1: Extract property data from the request body
         const {
-            name,
-            description,
+            propertyTitle,
+            propertyDescription,
             propertyType,
-            constructionStatus,
-            price,
-            propertySize,
-            locality,
-            city,
-            zip,
-            locationMap,
-            reraNumber,
-            builder,
+            propertyStatus,
+            propertyPrice,
+            propertyArea,
+            propertyLocality,
+            propertyCity,
+            propertyZip,
+            reraId,
+            builderName,
             amenities,
             highlights,
-            labelImage,
-            siteGallery,
+            locationMap,
+            brandImage,
+            siteImages,
             brochure,
             sitePlans
         } = req.body;
 
-        // Log individual fields if necessary
-        console.log('Property Name:', name);
-        console.log('Property Type:', propertyType);
-        console.log('Location:', city, zip);
-
-        // Create a new Property instance
-        const newProperty = new Property({
-            name,
-            description,
+        console.log('Extracted data from request body:', {
+            propertyTitle,
+            propertyDescription,
             propertyType,
-            constructionStatus,
-            price,
-            propertySize,
-            locality,
-            city,
-            zip,
-            locationMap,
-            reraNumber,
-            builder,
+            propertyStatus,
+            propertyPrice,
+            propertyArea,
+            propertyLocality,
+            propertyCity,
+            propertyZip,
+            reraId,
+            builderName,
             amenities,
             highlights,
-            labelImage,
-            siteGallery,
+            locationMap,
+            brandImage,
+            siteImages,
             brochure,
             sitePlans
         });
 
-        // Log the property object before saving
-        console.log('New Property Object:', newProperty);
+        const errors = {};
+        if (!propertyTitle) errors.propertyTitle = "Property title is missing";
+        if (!propertyType) errors.propertyType = "Property type is missing";
+        if (!propertyStatus) errors.propertyStatus = "Property status is missing";
+        if (propertyPrice == null) errors.propertyPrice = "Property price is missing";
+        if (!propertyArea) errors.propertyArea = "Property area is missing";
+        if (!propertyLocality) errors.propertyLocality = "Property locality is missing";
+        if (!propertyCity) errors.propertyCity = "Property city is missing";
+        if (propertyZip == null) errors.propertyZip = "Property zip is missing";
 
-        // Save the property to the database
+        if (Object.keys(errors).length > 0) {
+            console.log('Validation failed: Required fields are missing:', errors);
+            return res.status(400).json({
+                status: 'error',
+                message: 'Required fields are missing',
+                errors: errors
+            });
+        }
+
+        console.log('Validation passed'); // Log validation success
+
+        // Step 3: Create a new property document using the provided data
+        const newProperty = new Property({
+            propertyTitle,
+            propertyDescription,
+            propertyType,
+            propertyStatus,
+            propertyPrice,
+            propertyArea,
+            propertyLocality,
+            propertyCity,
+            propertyZip,
+            reraId,
+            builderName,
+            amenities,
+            highlights,
+            locationMap,
+            brandImage,
+            siteImages,
+            brochure,
+            sitePlans
+        });
+
+        console.log('Created new property document:', newProperty); // Log the new property document
+
+        // Step 4: Save the property to the database
         const savedProperty = await newProperty.save();
+        console.log('Property saved to database:', savedProperty); // Log the saved property
 
-        // Log successful save
-        console.log('Property saved successfully:', savedProperty);
-
-        // Return success response with status: 'success'
+        // Step 5: Return a success response with the saved property
         res.status(201).json({
             status: 'success',
-            property: savedProperty
+            message: 'Property created successfully',
+            data: savedProperty
         });
     } catch (error) {
-        // Log the error details
-        console.error('Error adding property:', error.message);
+        // Log the error
+        console.error('Error creating property:', error);
+
+        // Step 6: Return an error response
         res.status(500).json({
             status: 'error',
-            message: 'Server error',
+            message: 'Failed to create property. Please try again later.',
             error: error.message
         });
     }
-};
-
-module.exports = {
-    addProperty,
 };

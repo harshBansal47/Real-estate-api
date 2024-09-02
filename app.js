@@ -22,6 +22,10 @@ app.use(router);
 const loginroutes = require('./routes/LoginRoute')
 app.use('/api/login',loginroutes)
 
+//Property Api Route
+const propertyroute = require('./routes/PropertyRoute')
+app.use('/api/property',propertyroute);
+
 
 //Search Api Route
 const searchroutes = require('./routes/SearchRoute')

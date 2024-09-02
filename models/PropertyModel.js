@@ -1,105 +1,115 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-
 const propertySchema = new Schema({
-    name: {
+    propertyTitle: {
         type: String,
         required: true,
-        trim: true,
+        trim: true
     },
-    description: {
+    propertyDescription: {
         type: String,
-        trim: true,
+        trim: true
     },
     propertyType: {
         type: String,
-        enum: ['Residential', 'Commercial', 'Industrial', 'Land', 'Other'],
-        required: true,
+        enum: ['Residential', 'Commercial', 'Industrial', 'Land', 'Plot', 'Other'],
+        required: true
     },
-    constructionStatus: {
+    propertyStatus: {
         type: String,
-        enum: ['Under Construction', 'Ready to Move', 'Pre-Launch', 'Launch'],
-        required: true,
+        enum: ['Pending', 'Completed', 'Ongoing', 'In Progress', 'Not Started'],
+        required: true
     },
-    price: {
-        type: Number,
+    propertyPrice: {
+        type: String, // Changed from Number to String
         required: true,
-        min: 0,
+        trim: true
     },
-    propertySize: {
-        type: Number,
+    propertyArea: {
+        type: String, // Changed from Number to String
         required: true,
-        min: 0,
+        trim: true
     },
-    locality: {
-        type: String,
-        required: true,
-        trim: true,
-    },
-    city: {
+    propertyLocality: {
         type: String,
         required: true,
-        trim: true,
+        trim: true
     },
-    zip: {
+    propertyCity: {
         type: String,
         required: true,
-        trim: true,
+        trim: true
     },
+    propertyZip: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    reraId: {
+        type: String,
+        trim: true
+    },
+    builderName: {
+        type: String,
+        trim: true
+    },
+    amenities: {
+        dryer: Boolean,
+        outdoorShower: Boolean,
+        washer: Boolean,
+        gym: Boolean,
+        refrigerator: Boolean,
+        wifi: Boolean,
+        laundry: Boolean,
+        sauna: Boolean,
+        windowCoverings: Boolean,
+        airConditioning: Boolean,
+        lawn: Boolean,
+        swimmingPool: Boolean,
+        barbeque: Boolean,
+        microwave: Boolean,
+        tvCable: Boolean
+    },
+    highlights: [{
+        type: String,
+        trim: true
+    }],
     locationMap: {
         latitude: {
             type: Number,
-            required: true,
+            required: true
         },
         longitude: {
             type: Number,
-            required: true,
+            required: true
         }
     },
-    reraNumber: {
+    brandImage: {
         type: String,
-        trim: true,
+        trim: true
     },
-    builder: {
+    siteImages: [{
         type: String,
-        trim: true,
-    },
-    amenities: [{
-        type: String,
-        trim: true,
-    }],
-    highlights: [{
-        type: String,
-        trim: true,
-    }],
-    labelImage: {
-        type: String,
-        trim: true,
-    },
-    siteGallery: [{
-        type: String,
-        trim: true,
+        trim: true
     }],
     brochure: {
         type: String,
-        trim: true,
+        trim: true
     },
     sitePlans: [{
-        description: {
+        planPrice: {
             type: String,
-            trim: true,
+            trim: true
         },
-        size: {
-            type: Number,
-            min: 0,
-        },
-        image: {
+        planSize: {
             type: String,
-            trim: true,
+            trim: true
         },
-        price: {
-            type: Number,
-            min: 0,
+        planDescription: {
+            type: String,
+            trim: true
+        },
+        imageUpload: {
+            type: String,
+            trim: true
         }
     }]
 }, { timestamps: true });

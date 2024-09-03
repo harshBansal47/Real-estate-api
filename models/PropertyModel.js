@@ -12,7 +12,7 @@ const propertySchema = new mongoose.Schema({
     },
     propertyType: {
         type: String,
-        enum: ['Residential', 'Commercial', 'Industrial', 'Land', 'Plot', 'Other'],
+        enum: ['Residential', 'Commercial', 'Industrial', 'Rental', 'Plot', 'Other'],
         required: true
     },
     propertyStatus: {
@@ -76,11 +76,11 @@ const propertySchema = new mongoose.Schema({
     }],
     locationMap: {
         latitude: {
-            type: Number,
+            type: String,
             required: true
         },
         longitude: {
-            type: Number,
+            type: String,
             required: true
         }
     },

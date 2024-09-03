@@ -27,26 +27,7 @@ exports.createProperty = async (req, res) => {
             sitePlans
         } = req.body;
 
-        console.log('Extracted data from request body:', {
-            propertyTitle,
-            propertyDescription,
-            propertyType,
-            propertyStatus,
-            propertyPrice,
-            propertyArea,
-            propertyLocality,
-            propertyCity,
-            propertyZip,
-            reraId,
-            builderName,
-            amenities,
-            highlights,
-            locationMap,
-            brandImage,
-            siteImages,
-            brochure,
-            sitePlans
-        });
+        
 
         const errors = {};
         if (!propertyTitle) errors.propertyTitle = "Property title is missing";
@@ -69,6 +50,8 @@ exports.createProperty = async (req, res) => {
 
         console.log('Validation passed'); // Log validation success
 
+
+       
         // Step 3: Create a new property document using the provided data
         const newProperty = new Property({
             propertyTitle,
@@ -90,18 +73,18 @@ exports.createProperty = async (req, res) => {
             brochure,
             sitePlans
         });
-
-        console.log('Created new property document:', newProperty); // Log the new property document
+        //console.warn("EROR FINDING: ", newProperty)
+        console.log('Created new property document:'); // Log the new property document
 
         // Step 4: Save the property to the database
         const savedProperty = await newProperty.save();
-        console.log('Property saved to database:', savedProperty); // Log the saved property
+        console.log('Property saved to database:'); // Log the saved property
 
         // Step 5: Return a success response with the saved property
         res.status(201).json({
             status: 'success',
             message: 'Property created successfully',
-            data: savedProperty
+           
         });
     } catch (error) {
         // Log the error

@@ -201,6 +201,9 @@ exports.createProperty = async (req, res) => {
             message: 'Property created successfully',
            
         });
+
+
+        
     } catch (error) {
         // Log the error
         console.error('Error creating property:', error);

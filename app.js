@@ -29,7 +29,7 @@ app.use('/api/property',propertyroute);
 
 //Search Api Route
 const searchroutes = require('./routes/SearchRoute')
-app.use('/props/search',searchroutes);
+app.use('/api/search',searchroutes);
 
 //Builder Api Route
 const builderroutes = require('./routes/BuilderRoute')

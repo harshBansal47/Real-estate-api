@@ -52,7 +52,8 @@ exports.loginUser = async (req, res) => {
         // Prepare JWT payload and sign token
         const jwt_payload = {
             id: user._id,
-            role: user.role
+            role: user.role,
+            username: user.username
         };
 
         const secretkey = process.env.SECRET_KEY || "-zFO3i8ka5SgWst1faIRlXxPjVJ1xVZRmSCYBWDN5UmHVXpPiiR_WKL8JHMKJ8Q2eZROxUWu6ADk-m4frR1bnA";

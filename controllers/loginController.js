@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/UserModel'); // Assuming your User model is in the 'models' folder
+var jwt = require('jsonwebtoken')
 
 // Controller for registering a new user
 exports.registerUser = async (req, res) => {
@@ -18,7 +19,7 @@ exports.registerUser = async (req, res) => {
         });
 
         const savedUser = await newUser.save();
-        console.log("new user create at",savedUser.createdAt);
+        console.log("new user create at", savedUser.createdAt);
 
         res.status(201).json({ status: "success", role: savedUser.role });
     } catch (error) {
@@ -31,6 +32,7 @@ exports.registerUser = async (req, res) => {
 };
 
 // Controller for verifying user login
+
 exports.loginUser = async (req, res) => {
     try {
         const { username, password } = req.body;
@@ -47,8 +49,18 @@ exports.loginUser = async (req, res) => {
             return res.status(401).json({ status: "error", message: "Invalid credentials" });
         }
 
-        // Send back the user's role
-        res.status(200).json({ status: "success", role: user.role });
+        // Prepare JWT payload and sign token
+        const jwt_payload = {
+            id: user._id,
+            role: user.role
+        };
+
+        const secretkey = process.env.SECRET_KEY || "-zFO3i8ka5SgWst1faIRlXxPjVJ1xVZRmSCYBWDN5UmHVXpPiiR_WKL8JHMKJ8Q2eZROxUWu6ADk-m4frR1bnA";
+        const token = jwt.sign(jwt_payload, secretkey, { expiresIn: '1h' });
+
+        // Send back the token and user's role
+        res.status(200).json({ status: "success", token: token, role: user.role });
+
     } catch (error) {
         console.error('Error during user login:', error);
         res.status(500).json({ status: "error", message: "Server error", details: error.message });

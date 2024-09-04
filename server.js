@@ -3,8 +3,8 @@ const connectDB = require('./config'); // Import the database connection functio
 
 const PORT = process.env.PORT || 3002;
 
-// Connect to Datbase
-// connectDB();
+//Connect to Datbase
+connectDB();
 
 // Start Server
 app.listen(PORT, () => {

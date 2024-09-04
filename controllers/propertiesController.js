@@ -34,6 +34,44 @@ exports.getAllProperties = async (req, res) => {
 };
 
 
+
+// Controller function to fetch a property by ID
+exports.getPropertyById = async (req, res) => {
+    try {
+        const propertyId = req.params.id; // Get the ID from the request parameters
+
+        // Fetch the property from the database by ID
+        const property = await Property.findById(propertyId);
+
+        // Check if the property exists
+        if (!property) {
+            return res.status(404).json({
+                status: 'error',
+                message: 'Property not found'
+            });
+        }
+
+        // Return a success response with the fetched property
+        res.status(200).json({
+            status: 'success',
+            message: 'Property retrieved successfully',
+            data: property // Include the property object in the response
+        });
+    } catch (error) {
+        // Log the error
+        console.error('Error retrieving the property:', error);
+
+        // Return an error response if there's a server error or bad input (such as an invalid ID format)
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to retrieve the property. Please check the ID and try again later.',
+            error: error.message
+        });
+    }
+};
+
+
+
 // Controller function to delete a property
 exports.deleteProperty = async (req, res) => {
     const propertyId = req.params.id; // Extracting property ID from URL parameters

@@ -34,6 +34,10 @@ app.use('/api/property',propertyroute);
 const searchroutes = require('./routes/SearchRoute')
 app.use('/api/search',searchroutes);
 
+//Email Api Route
+const emailroute = require('./routes/EmailRoute')
+app.use('/api/send-email',emailroute);
+
 //Builder Api Route
 const builderroutes = require('./routes/BuilderRoute')
 app.use('/props/builder',builderroutes);

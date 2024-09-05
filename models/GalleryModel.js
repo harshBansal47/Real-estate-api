@@ -2,22 +2,13 @@ const mongoose = require('mongoose');
 
 const gallerySchema = new mongoose.Schema(
   {
-    title: {
-      type: String,
-      required: true,
-    },
-    description: {
-      type: String,
-      required: false,
-    },
-    category: { 
+    tag: { 
       type: String,
       required: true, 
     },
     images: [
       {
-        url: { type: String, required: true }, // URL or path to the image
-        caption: { type: String, required: false }, // Optional caption for the image
+       type:String
       },
     ],
   },

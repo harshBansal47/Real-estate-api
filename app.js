@@ -38,6 +38,10 @@ app.use('/api/search',searchroutes);
 const builderroutes = require('./routes/BuilderRoute')
 app.use('/props/builder',builderroutes);
 
+//Gallery Api Route
+const galleryroute = require('./routes/GalleryRoute');
+app.use('/api/gallery',galleryroute);
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack); // Log error stack to the console

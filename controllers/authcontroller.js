@@ -38,7 +38,15 @@ exports.authcontroller = (req, res) => {
         });
 
     } catch (error) {
-        console.error('Token verification failed:', error);
-        return res.status(400).json({ message: 'Invalid or expired token' });
+        // Handle token expiration or other JWT-related errors
+        if (error.name === 'TokenExpiredError') {
+            return res.status(401).json({ message: 'Token has expired. Please login again.' });
+        } else if (error.name === 'JsonWebTokenError') {
+            return res.status(400).json({ message: 'Invalid token.' });
+        } else {
+            // For any other errors
+            console.error('Token verification failed:', error);
+            return res.status(500).json({ message: 'Internal server error.' });
+        }
     }
 };

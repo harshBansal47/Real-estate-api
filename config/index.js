@@ -13,7 +13,7 @@ const connectDB = async () => {
 
     const db_url = process.env.DATABASE_URL;
     const conn = await mongoose.connect(db_url); // Await the DB connection
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
+    console.log(`MongoDB Connected: ${conn.connection.host} ${db_url}`);
   } catch (error) {
     console.error(`Error: ${error.message}`);
     console.error(`Failed to detect environment or connect to DB: ${error.message}`);

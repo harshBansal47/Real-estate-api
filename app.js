@@ -27,9 +27,41 @@ app.use('/api/login',loginroutes)
 const authroutes = require('./routes/AuthRoute')
 app.use('/api/auth',authroutes);
 
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './uploads'); // Specify folder for uploads
+  },
+  filename: function (req, file, cb) {
+    cb(null, `${Date.now()}_${file.originalname}`); // Unique filename
+  },
+});
+
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 20 * 1024 * 1024 }, // Increase limit to 20MB (for example)
+  fileFilter: function (req, file, cb) {
+      const ext = path.extname(file.originalname).toLowerCase();
+      if (ext !== '.jpg' && ext !== '.jpeg' && ext !== '.png' && ext !== '.pdf') {
+          return cb(new Error('Only images and PDFs are allowed.'));
+      }
+      cb(null, true);
+  },
+});
+
+
+
+const uploadFields = upload.fields([
+  { name: 'brandImage', maxCount: 1 },
+  { name: 'siteImages[]', maxCount: 10 }, // Adjust maxCount based on your needs
+  { name: 'brochure', maxCount: 1 },
+  { name: 'sitePlans', maxCount: 4 }, // For dynamic site plan image
+]);
+
 //Property Api Route
 const propertyroute = require('./routes/PropertyRoute')
-app.use('/api/property',propertyroute);
+const {createProperty} = require('./controllers/propertiesController')
+// app.use('/api/property');
+app.use('/api/property/create',uploadFields,createProperty);
 
 //Search Api Route
 const searchroutes = require('./routes/SearchRoute')

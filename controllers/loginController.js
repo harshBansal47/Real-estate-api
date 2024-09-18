@@ -6,7 +6,7 @@ var jwt = require('jsonwebtoken')
 exports.registerUser = async (req, res) => {
     try {
         const { username, password, role } = req.body;
-
+        
         // Hash the password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
@@ -39,6 +39,7 @@ exports.loginUser = async (req, res) => {
 
         // Find the user by username
         const user = await User.findOne({ username });
+
         if (!user) {
             return res.status(404).json({ status: "error", message: "User not found" });
         }

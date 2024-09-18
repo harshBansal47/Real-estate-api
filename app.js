@@ -3,6 +3,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const helmet = require('helmet');
 require('dotenv').config(); 
+const multer  = require('multer')
 
 //initiallize app
 const app = express();

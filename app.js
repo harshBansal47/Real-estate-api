@@ -3,84 +3,84 @@ const cors = require('cors');
 const morgan = require('morgan');
 const helmet = require('helmet');
 require('dotenv').config(); 
-const multer  = require('multer')
-const bodyParser = require('body-parser');
+const multer = require('multer');
+const fs = require('fs');
+const path = require('path');
 
-//initiallize app
+// Initialize app
 const app = express();
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
 
 // Middleware
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
 app.use(helmet()); // Secure Express apps by setting various HTTP headers
-app.use(cors()); // Enable CORS - Cross-Origin Resource Sharing
+app.use(cors()); // Enable CORS
 app.use(morgan('dev')); // HTTP request logger for development
-// app.use(express.json()); // Parse incoming JSON requests
-app.use(express.urlencoded({ extended: true })); // Parse URL-encoded requests
 
-//initiallize router
-const router = express.Router();
-app.use(router);
-
-//Login Api Route
-const loginroutes = require('./routes/LoginRoute')
-app.use('/api/login',loginroutes)
-
-//Auth Route
-const authroutes = require('./routes/AuthRoute')
-app.use('/api/auth',authroutes);
-
+// Multer configuration to save files in 'uploads/' folder
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, './uploads'); // Specify folder for uploads
+  destination: (req, file, cb) => {
+    const dir = 'uploads/';
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir); // Dynamically create the folder if it doesn't exist
+    }
+    cb(null, dir); // Set the folder for saving uploaded files
   },
-  filename: function (req, file, cb) {
-    cb(null, `${Date.now()}_${file.originalname}`); // Unique filename
-  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname)); // Unique file name
+  }
 });
 
-const upload = multer({
+// Multer upload middleware
+const upload = multer({ 
   storage: storage,
-  limits: { fileSize: 20 * 1024 * 1024 }, // Increase limit to 20MB (for example)
-  fileFilter: function (req, file, cb) {
-      const ext = path.extname(file.originalname).toLowerCase();
-      if (ext !== '.jpg' && ext !== '.jpeg' && ext !== '.png' && ext !== '.pdf') {
-          return cb(new Error('Only images and PDFs are allowed.'));
-      }
-      cb(null, true);
-  },
+  limits: { fileSize: 100 * 1024 * 1024 } // Set a file size limit (100MB)
 });
 
+// Function to get dynamic upload fields for site plans and site images
+const getUploadFields = (maxSitePlans, maxSiteImages) => {
+  const fields = [
+    { name: 'brandImage', maxCount: 1 },
+    { name: 'brochure', maxCount: 1 }
+  ];
 
+  // Dynamically add sitePlans file fields
+  for (let i = 0; i < maxSitePlans; i++) {
+    fields.push({ name: `sitePlans[${i}][imageUpload]`, maxCount: 1 });
+  }
 
-const uploadFields = upload.fields([
-  { name: 'brandImage', maxCount: 1 },
-  { name: 'siteImages[]', maxCount: 10 }, // Adjust maxCount based on your needs
-  { name: 'brochure', maxCount: 1 },
-  { name: 'sitePlans', maxCount: 4 }, // For dynamic site plan image
-]);
+  // Dynamically add siteImages file fields
+  for (let i = 0; i < maxSiteImages; i++) {
+    fields.push({ name: `siteImages[${i}]`, maxCount: 1 });
+  }
 
-//Property Api Route
-const propertyroute = require('./routes/PropertyRoute')
-const {createProperty} = require('./controllers/propertiesController')
-// app.use('/api/property');
-app.use('/api/property/create',uploadFields,createProperty);
+  return fields;
+};
 
-//Search Api Route
-const searchroutes = require('./routes/SearchRoute')
-app.use('/api/search',searchroutes);
+// Property Api Route
+const { createProperty } = require('./controllers/propertiesController');
+app.post('/api/property/create', upload.fields(getUploadFields(4, 6)), createProperty); // Directly use upload.fields
 
-//Email Api Route
-const emailroute = require('./routes/EmailRoute')
-app.use('/api/send-email',emailroute);
+// Other routes...
+const loginroutes = require('./routes/LoginRoute');
+app.use('/api/login', loginroutes);
 
-//Builder Api Route
-const builderroutes = require('./routes/BuilderRoute')
-app.use('/props/builder',builderroutes);
+const authroutes = require('./routes/AuthRoute');
+app.use('/api/auth', authroutes);
 
-//Gallery Api Route
+const searchroutes = require('./routes/SearchRoute');
+app.use('/api/search', searchroutes);
+
+const emailroute = require('./routes/EmailRoute');
+app.use('/api/send-email', emailroute);
+
+const builderroutes = require('./routes/BuilderRoute');
+app.use('/props/builder', builderroutes);
+
 const galleryroute = require('./routes/GalleryRoute');
-app.use('/api/gallery',galleryroute);
+
+app.use('/api/gallery', galleryroute);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

@@ -12,7 +12,7 @@ const connectDB = async () => {
     }
 
     const db_url = process.env.DATABASE_URL;
-    const conn = await mongoose.connect("mongodb+srv://harshbansal472000:OUG3IBzW3iuNZGRM@prop-cluster.afk19.mongodb.net/proptrade"); // Await the DB connection
+    const conn = await mongoose.connect(db_url); // Await the DB connection
     console.log(`MongoDB Connected: ${conn.connection.host} ${db_url}`);
   } catch (error) {
     console.error(`Error: ${error.message}`);

@@ -154,44 +154,85 @@ exports.updateProperty = async (req, res) => {
 
 
 // Controller function to create a new property
-exports.createProperty = async (req, res) => {
+exports.createProperty =async (req, res) => {
     try {
-
-        console.log(req.body);
-        process.exit(1);
-        const newProperty = new Property({
-            ...req.body,
-            latitude: req.body.latitude,
-            longitude: req.body.longitude,
-            amenities: req.body.amenities,
-            highlights: req.body.highlights || [],
-        });
-
-        // Handle site plans and file uploads
-        if (req.body.sitePlans) {
-            newProperty.sitePlans = req.body.sitePlans.map((plan, index) => ({
-                planPrice: plan.planPrice,
-                planSize: plan.planSize,
-                planDescription: plan.planDescription,
-                imageUpload: req.files[`sitePlans[${index}][imageUpload]`]?.[0]?.path,
-            }));
+      // Access the payload data
+      const propertyDetails = {
+        propertyTitle: req.body.propertyTitle,
+        propertyDescription: req.body.propertyDescription,
+        propertyType: req.body.propertyType,
+        propertyStatus: req.body.propertyStatus,
+        propertyPrice: req.body.propertyPrice,
+        propertyArea: req.body.propertyArea,
+        propertyLocality: req.body.propertyLocality,
+        propertyCity: req.body.propertyCity,
+        propertyZip: req.body.propertyZip,
+        reraId: req.body.reraId,
+        builderName: req.body.builderName,
+        latitude: req.body.latitude,
+        longitude: req.body.longitude,
+        amenities: req.body.amenities ? req.body.amenities.split(',') : [],
+        highlights: req.body.highlights ? req.body.highlights.split(',') : [],
+        sitePlans: [],
+        siteImages: []
+      };
+  
+      // Process site plans from the request body and files
+      const sitePlans = [];
+      Object.keys(req.body).forEach((key) => {
+        const matches = key.match(/sitePlans\[(\d+)\]\[(.+)\]/);
+        if (matches) {
+          const index = parseInt(matches[1], 10);
+          const field = matches[2];
+  
+          // Ensure the sitePlans array has the correct index
+          if (!sitePlans[index]) {
+            sitePlans[index] = {};
+          }
+  
+          // Add the field value
+          sitePlans[index][field] = req.body[key];
         }
-
-        if (req.files) {
-            if (req.files['brandImage']) {
-                newProperty.brandImage = req.files['brandImage'][0].path;
-            }
-            if (req.files['siteImages[]']) {
-                newProperty.siteImages = req.files['siteImages[]'].map(file => file.path);
-            }
-            if (req.files['brochure']) {
-                newProperty.brochure = req.files['brochure'][0].path;
-            }
+      });
+  
+      // Add the image file paths to site plans
+      for (let i = 0; i < sitePlans.length; i++) {
+        const imageField = `sitePlans[${i}][imageUpload]`;
+        if (req.files[imageField]) {
+          sitePlans[i].imageUpload = req.files[imageField][0].path; // Saving path instead of binary
         }
-
-        await newProperty.save();
-        res.status(201).json({ status: 'success', data: newProperty });
+      }
+  
+      propertyDetails.sitePlans = sitePlans;
+  
+      // Process and add dynamic site images
+      Object.keys(req.files).forEach((key) => {
+        const matches = key.match(/siteImages\[(\d+)\]/);
+        if (matches) {
+          const index = parseInt(matches[1], 10);
+          propertyDetails.siteImages[index] = req.files[key][0].path; // Save the image path
+        }
+      });
+  
+      // Save other uploaded file paths
+      propertyDetails.brandImage = req.files['brandImage'] ? req.files['brandImage'][0].path : null;
+      propertyDetails.brochure = req.files['brochure'] ? req.files['brochure'][0].path : null;
+  
+      // Create a new property instance with the parsed details
+      const newProperty = new Property(propertyDetails);
+  
+    //   // Save the new property to the database
+     await newProperty.save();
+  
+      // Respond with success and the saved property details
+      res.status(201).json({
+        status: 'success',
+        data: newProperty
+      });
+  
     } catch (error) {
-        handleErrorResponse(res, error, 'Property creation failed.');
+        console.log(error);
+      // Handle errors and respond with appropriate status and message
+    //   handleErrorResponse(res, error, 'Property creation failed.');
     }
-};
+  };

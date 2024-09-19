@@ -21,12 +21,12 @@ const propertySchema = new mongoose.Schema({
     required: true
   },
   propertyPrice: {
-    type: String, // Keeping it as a String due to formatted input
+    type: String, // Keeping it as a String due to possible formatted input
     required: true,
     trim: true
   },
   propertyArea: {
-    type: String, // Keeping it as a String for flexibility
+    type: String, // Keeping it as a String for flexibility in formats
     required: true,
     trim: true
   },
@@ -54,25 +54,31 @@ const propertySchema = new mongoose.Schema({
     trim: true
   },
   amenities: [{
-    type:String,
-    trim:true
+    type: String,
+    trim: true
   }],
   highlights: [{
     type: String,
     trim: true
   }],
-  latitude:String,
-  longitude:String,
+  latitude: {
+    type: Number, // Storing latitude as a number for geolocation purposes
+    trim: true
+  },
+  longitude: {
+    type: Number, // Storing longitude as a number for geolocation purposes
+    trim: true
+  },
   brandImage: {
-    type: String, // Storing the image path as a string
+    type: String, // Storing the image file path as a string
     trim: true
   },
   siteImages: [{
-    type: String, // Storing the file path as a string
+    type: String, // Storing the site images file paths as strings
     trim: true
   }],
   brochure: {
-    type: String, // Storing the brochure file path
+    type: String, // Storing the brochure file path as a string
     trim: true
   },
   sitePlans: [{
@@ -89,7 +95,7 @@ const propertySchema = new mongoose.Schema({
       trim: true
     },
     imageUpload: {
-      type: String, // Storing the file path for the plan's image
+      type: String, // Storing the site plan image path
       trim: true
     }
   }]

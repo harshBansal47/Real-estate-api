@@ -176,35 +176,49 @@ exports.createProperty =async (req, res) => {
         sitePlans: [],
         siteImages: []
       };
-  
       // Process site plans from the request body and files
       const sitePlans = [];
-      Object.keys(req.body).forEach((key) => {
-        const matches = key.match(/sitePlans\[(\d+)\]\[(.+)\]/);
-        if (matches) {
-          const index = parseInt(matches[1], 10);
-          const field = matches[2];
-  
-          // Ensure the sitePlans array has the correct index
-          if (!sitePlans[index]) {
-            sitePlans[index] = {};
-          }
-  
-          // Add the field value
-          sitePlans[index][field] = req.body[key];
-        }
-      });
-  
-      // Add the image file paths to site plans
-      for (let i = 0; i < sitePlans.length; i++) {
-        const imageField = `sitePlans[${i}][imageUpload]`;
-        if (req.files[imageField]) {
-          sitePlans[i].imageUpload = req.files[imageField][0].path; // Saving path instead of binary
+      if(req.body.sitePlans.length>0){
+        req.body.sitePlans.forEach((plan,index)=>{
+            sitePlans[index] = plan;
+        })
+        for (let i = 0; i < sitePlans.length; i++) {
+            const imageField = `sitePlans[${i}][imageUpload]`;
+            if (req.files[imageField]) {
+              sitePlans[i].imageUpload = req.files[imageField][0].path; // Saving path instead of binary
+            }
         }
       }
+
+
+
+
+    //   Object.keys(req.body).forEach((key) => {
+    //     const matches = key.match(/sitePlans/);
+    //     console.log(matches)
+    //     if (matches) {
+    //       const index = parseInt(matches[1], 10);
+    //       const field = matches[2];
+    //       // Ensure the sitePlans array has the correct index
+    //       if (!sitePlans[index]) {
+    //         sitePlans[index] = {};
+    //       }
+    //       // Add the field value
+    //       sitePlans[index][field] = req.body[key];
+    //     }
+    //   });
   
+      // Add the image file paths to site plans
+    //   for (let i = 0; i < sitePlans.length; i++) {
+    //     const imageField = `sitePlans[${i}][imageUpload]`;
+    //     if (req.files[imageField]) {
+    //       sitePlans[i].imageUpload = req.files[imageField][0].path; // Saving path instead of binary
+    //     }
+    //   }
+  
+
       propertyDetails.sitePlans = sitePlans;
-  
+
       // Process and add dynamic site images
       Object.keys(req.files).forEach((key) => {
         const matches = key.match(/siteImages\[(\d+)\]/);

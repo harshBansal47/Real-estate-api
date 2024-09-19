@@ -19,7 +19,7 @@ const router = express.Router();
 //   ]),createProperty);
 
 router.get('/getAll',getAllProperties);
-router.get('/delete/:id',deleteProperty);
+router.delete('/delete/:id',deleteProperty);
 router.get('/update/:id',updateProperty);
 router.get('/findone/:id',getPropertyById);
 

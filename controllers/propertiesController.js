@@ -156,74 +156,42 @@ exports.updateProperty = async (req, res) => {
 // Controller function to create a new property
 exports.createProperty = async (req, res) => {
     try {
-      const {
-        propertyTitle,
-        propertyDescription,
-        propertyType,
-        propertyStatus,
-        propertyPrice,
-        propertyArea,
-        propertyLocality,
-        propertyCity,
-        propertyZip,
-        reraId,
-        builderName,
-        locationMap,
-        amenities,
-        highlights,
-        sitePlans,
-      } = req.body;
-  
-      // Create property object
-      const newProperty = new Property({
-        propertyTitle,
-        propertyDescription,
-        propertyType,
-        propertyStatus,
-        propertyPrice,
-        propertyArea,
-        propertyLocality,
-        propertyCity,
-        propertyZip,
-        reraId,
-        builderName,
-        locationMap: {
-          latitude: req.body['locationMap[latitude]'],
-          longitude: req.body['locationMap[longitude]'],
-        },
-        amenities: req.body['amenities[]'],
-        highlights: req.body.highlights || [],
-      });
-  
-      // Handle site plans
-      if (req.body.sitePlans) {
-        newProperty.sitePlans = req.body.sitePlans.map((plan, index) => ({
-          planPrice: plan.planPrice,
-          planSize: plan.planSize,
-          planDescription: plan.planDescription,
-          imageUpload: req.files[`sitePlans[${index}][imageUpload]`]?.[0]?.path,
-        }));
-      }
-  
-      // Handle brand image
-      if (req.files['brandImage']) {
-        newProperty.brandImage = req.files['brandImage'][0].path;
-      }
-  
-      // Handle site images
-      if (req.files['siteImages[]']) {
-        newProperty.siteImages = req.files['siteImages[]'].map(file => file.path);
-      }
-  
-      // Handle brochure
-      if (req.files['brochure']) {
-        newProperty.brochure = req.files['brochure'][0].path;
-      }
-  
-      await newProperty.save();
-      res.status(201).json({ status: 'success', data: newProperty });
+
+        console.log(req.body);
+        process.exit(1);
+        const newProperty = new Property({
+            ...req.body,
+            latitude: req.body.latitude,
+            longitude: req.body.longitude,
+            amenities: req.body.amenities,
+            highlights: req.body.highlights || [],
+        });
+
+        // Handle site plans and file uploads
+        if (req.body.sitePlans) {
+            newProperty.sitePlans = req.body.sitePlans.map((plan, index) => ({
+                planPrice: plan.planPrice,
+                planSize: plan.planSize,
+                planDescription: plan.planDescription,
+                imageUpload: req.files[`sitePlans[${index}][imageUpload]`]?.[0]?.path,
+            }));
+        }
+
+        if (req.files) {
+            if (req.files['brandImage']) {
+                newProperty.brandImage = req.files['brandImage'][0].path;
+            }
+            if (req.files['siteImages[]']) {
+                newProperty.siteImages = req.files['siteImages[]'].map(file => file.path);
+            }
+            if (req.files['brochure']) {
+                newProperty.brochure = req.files['brochure'][0].path;
+            }
+        }
+
+        await newProperty.save();
+        res.status(201).json({ status: 'success', data: newProperty });
     } catch (error) {
-      console.error('Error creating property:', error);
-      res.status(500).json({ status: 'error', message: 'Property creation failed.' });
+        handleErrorResponse(res, error, 'Property creation failed.');
     }
-  };
+};

@@ -53,39 +53,16 @@ const propertySchema = new mongoose.Schema({
     type: String,
     trim: true
   },
-  amenities: {
-    dryer: { type: Boolean, default: false },
-    outdoorShower: { type: Boolean, default: false },
-    washer: { type: Boolean, default: false },
-    gym: { type: Boolean, default: false },
-    refrigerator: { type: Boolean, default: false },
-    wifi: { type: Boolean, default: false },
-    laundry: { type: Boolean, default: false },
-    sauna: { type: Boolean, default: false },
-    windowCoverings: { type: Boolean, default: false },
-    airConditioning: { type: Boolean, default: false },
-    lawn: { type: Boolean, default: false },
-    swimmingPool: { type: Boolean, default: false },
-    barbeque: { type: Boolean, default: false },
-    microwave: { type: Boolean, default: false },
-    tvCable: { type: Boolean, default: false }
-  },
+  amenities: [{
+    type:String,
+    trim:true
+  }],
   highlights: [{
     type: String,
     trim: true
   }],
-  locationMap: {
-    latitude: {
-      type: String,
-      required: true,
-      trim: true
-    },
-    longitude: {
-      type: String,
-      required: true,
-      trim: true
-    }
-  },
+  latitude:String,
+  longitude:String,
   brandImage: {
     type: String, // Storing the image path as a string
     trim: true

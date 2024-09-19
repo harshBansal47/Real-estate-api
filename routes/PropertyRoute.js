@@ -3,26 +3,8 @@ const  { createProperty,getAllProperties,deleteProperty,updateProperty,getProper
 const multer  = require('multer')
 const router = express.Router();
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, './uploads'); // Specify folder for uploads
-    },
-    filename: function (req, file, cb) {
-      cb(null, `${Date.now()}_${file.originalname}`); // Unique filename
-    },
-  });
 
-const upload = multer({
-    storage: storage,
-    limits: { fileSize: 10 * 1024 * 1024 }, // Limit file size to 10MB
-    fileFilter: function (req, file, cb) {
-      const ext = path.extname(file.originalname).toLowerCase();
-      if (ext !== '.jpg' && ext !== '.jpeg' && ext !== '.png' && ext !== '.pdf') {
-        return cb(new Error('Only images and PDFs are allowed.'));
-      }
-      cb(null, true);
-    },
-  });
+
 
 
 const uploadFields = upload.fields([

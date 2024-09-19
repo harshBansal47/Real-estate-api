@@ -1,0 +1,13 @@
+image: node:18
+
+pipelines:
+  default:
+    - step:
+        name: Build and Deploy
+        caches:
+          - node
+        script:
+          - echo "Starting deployment process..."
+          - apt-get update && apt-get install -y ssh
+          - echo "Connecting to the server and running the deployment script..."
+          - ssh -o StrictHostKeyChecking=no maheshwari@162.240.227.210 'bash real_estate_back.sh'

@@ -62,6 +62,11 @@ const getUploadFields = (maxSitePlans, maxSiteImages) => {
 const { createProperty } = require('./controllers/propertiesController');
 app.post('/api/property/create', upload.fields(getUploadFields(4, 6)), createProperty); // Directly use upload.fields
 
+const PropertyRouter = require('./routes/PropertyRoute');
+app.use('/api/property/',PropertyRouter);
+
+
+
 // Other routes...
 const loginroutes = require('./routes/LoginRoute');
 app.use('/api/login', loginroutes);

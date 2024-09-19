@@ -4,15 +4,18 @@ const morgan = require('morgan');
 const helmet = require('helmet');
 require('dotenv').config(); 
 const multer  = require('multer')
+const bodyParser = require('body-parser');
 
 //initiallize app
 const app = express();
 
 // Middleware
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use(helmet()); // Secure Express apps by setting various HTTP headers
 app.use(cors()); // Enable CORS - Cross-Origin Resource Sharing
 app.use(morgan('dev')); // HTTP request logger for development
-app.use(express.json()); // Parse incoming JSON requests
+// app.use(express.json()); // Parse incoming JSON requests
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded requests
 
 //initiallize router

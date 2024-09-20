@@ -10,4 +10,5 @@ pipelines:
           - echo "Starting deployment process..."
           - apt-get update && apt-get install -y ssh
           - echo "Connecting to the server and running the deployment script..."
-          - ssh -o StrictHostKeyChecking=no maheshwari@162.240.227.210 'bash real_estate_back.sh'
+          # - ssh -o StrictHostKeyChecking=no maheshwari@162.240.227.210 'bash real_estate_back.sh'
+          - ssh -o StrictHostKeyChecking=no maheshwari@162.240.227.210 'bash real_estate/real_estate_backend/deploy.sh'
